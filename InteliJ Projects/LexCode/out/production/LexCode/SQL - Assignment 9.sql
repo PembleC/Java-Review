@@ -1,0 +1,8 @@
+/*
+SQL - Assignment 9
+Carson Pemble
+11/10/20
+*/
+
+SELECT COUNT(Orderid) AS TOTALORDERSCOUNT, COUNT(Pymtmode) AS PAIDORDERSCOUNT
+FROM Orders;
