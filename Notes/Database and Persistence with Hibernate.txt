@@ -1,0 +1,199 @@
+/// Database and Persistence with Hibernate ///
+
+
+Hibernate = developed from Java Persistence API (JPA)
+          = Open Source
+
+Front End (Web Pages) - HTML, CSS
+    Presentation Tier - JSP
+    Service Tier - JAX RS
+    Business Tier - Map, Set, Lists
+    PERSITENCE Tier = Hibernate
+Back End (Database) - SQL
+
+
+Persistence:
+Data = What to persist?       Java Objects
+Medium = How to persist?      JDBC
+Storage = Where to persist?   RDBMS   (Our DB of choice is H2)
+
+Connection between Java and DB is created using JDBC
+We have to map java objects to databases.
+
+We can use: Object Relational Mapping (ORM)
+This will solve our Mismatch issue
+
+// Structure
+Table  = Java Entity Class
+Columns = Instance Variables
+Rows = Java Objects
+
+
+Hibernate Steps:
+1) Manage dependencies using Maven
+2) Configure Hibernate to connect to database   - Use XML file (hibernate.cfg.xml)
+3) Map Java classes with the database Table
+4) Perform CRUD using Java Methods
+5) Generate Primary Keys
+6) Perform CRUD using SQL
+
+
+
+2) hibernate.cfg.xml:
+<!-- sample configuration considering that Oracle is installed in localhost -->
+<hibernate-configuration>
+ <session-factory name="hibernate">
+  <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+  <property name="hibernate.connection.url">jdbc:oracle:thin:@10.120.79.57:1521:georli01</property>
+  <property name="hibernate.connection.username">username</property>
+  <property name="hibernate.connection.password">password</property>
+  <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+  <mapping class="com.InfyBank.CustomerEntity"/>                        // This is the line that maps this class
+  <property name="hibernate.show_sql">true</property>
+ </session-factory>
+</hibernate-configuration>
+
+
+3) Hibernate Mapping:
+CustomerEntity obj1 = new CustomerEntity(5001,"George", new Date("16-Jan-1996"), "Mumbai", "9845998734");
+
+@Entity                                 // Declares it as an Entity Class
+@Table(name="customer")                 // Declares mapping to a table in DB
+public class CustomerEntity {
+	@Id                                   // Declares an atribute as PK
+	private Integer customerId;
+	private String customerName;
+	@Temporal(TemporalType.DATE)          // Helps with Date conversion for DB
+	private Calendar dateOfBirth;
+	@Transient                            // Marks so it will not be persisted in DB
+	private Integer age;
+	private String address;
+	@Column(name="phoneNumber")           // Declares mapping to corresponding column in DB
+	private Long contactNumber;
+	//getters and setters
+}
+
+4) CRUD Methods = Look at CustomerDao
+
+
+ENTITY STATES
+//These DAO methods brings an entity instance to Persistent state:
+persist() or save()
+get() or load()
+update() or merge()     // merge returns a same object as that being updated
+//These DAO methods brings an entity into the Detached state for the following reasons
+evict()
+clear()
+close()       // Closing of persistence context / sessions
+// Other Methods
+refresh()     // Hibernate compares values of the Customer table and Customer entity object. If it finds any difference it will update the customer object with the latest values
+
+
+5) Generate Primary Keys
+Sequence:  auto generate the identifier value
+    Below @Table annotation:
+    @GenericGenerator(name="generatorName",strategy="sequence",
+      parameters={@Parameter(name="sequence",value="DB_CustomerId_PK")})
+
+      SQL EX:
+      CREATE SEQUENCE <sequence_name> START WITH <initial_value> INCREMENT BY <increment_value>;
+        Example:
+        CREATE SEQUENCE DB_CustomerId_PK START WITH 5004 INCREMENT BY 1;
+
+Increment:
+  //Below @Table annotation:
+    @GenericGenerator(name="generatorName", strategy = "increment");
+
+Native: you can let the framework decide upon the strategy by keeping your strategy type as native
+  //Below @Table annotation:
+    @GenericGenerator(name="generatorName", strategy = "native")
+
+Assigned:   Hibernate will not generate the primary key automatically
+  //Below @Table annotation:
+    @GenericGenerator(name="generatorName",strategy="assigned")
+
+
+In ENTITY:
+@Id
+	@GeneratedValue(generator="generatorName")
+	private Integer customerId;
+In DAO:
+customerId=(Integer)session.save(ce);
+
+
+
+6) Perform CRUD with Hibernate Query language (HQL)
+6.1 Read Data:
+String hql = "from CustomerEntity ce where ce.customerName='"+customerName +"' and ce.dateOfBirth='"+dateOfBirth+"'"; // Creating the query
+      List<Customer> returnList=new ArrayList<Customer>();
+      try {
+          session = sessionFactory.openSession();
+          Query query = session.createQuery(hql);                                  // creating the query object
+          List<CustomerEntity> cList=query.list();                                 //executing the Query object (it needs to be executed using its list() method)
+          for(CustomerEntity ce:cList){
+              Customer customer=new Customer();
+              customer.setAddress(ce.getAddress());
+              customer.setContactNumber(ce.getContactNumber());
+              customer.setCustomerId(ce.getCustomerId());
+              customer.setCustomerName(ce.getCustomerName());
+              customer.setDateOfBirth(ce.getDateOfBirth());
+              returnList.add(customer);
+          }
+  // For multiple columns use an array:
+    String hql = "Select ce.customerId,ce.customerName from CustomerEntity ce";
+    Query query = session.createQuery(hql);
+    List<Object[]> objectList= query.list();
+
+  // Using Positional Parameters
+  String hql = "from CustomerEntity ce where ce.customerName=? and ce.dateOfBirth=?";
+  query.setString(0,customerName);   //or query.setParameter(0, customerName)
+  query.setCalendar(1,dateOfBirth);  //or query.setParameter(1,dateOfBirth)
+
+
+6.2 Update/Delete Data:
+  // Creating a query to update the address and contact number of the customer
+  String hql = "Update CustomerEntity ce set ce.address=:address,ce.contactNumber=:contactNumber where
+                         ce.customerName=:customerName and ce.dateOfBirth=:dateOfBirth";
+  Query query = session.createQuery(hql);                           // Creating the query object
+
+  query.setParameter("address", newAddress);             //setting parameters
+	query.setParameter("dateOfBirth", dob);
+	query.setParameter("customerName", customerName);
+	query.setParameter("contactNumber", newNumber);
+
+  session.beginTransaction()
+	noOfRowsUpdated = query.executeUpdate();          // Executing the query, returns the number of rows updated
+  session.getTransaction().commit();
+
+
+6.3 Insert Data:
+  String hql = "insert into SeniorCustomerEntity(customerId,customerName,dateOfBirth,address,contactNumber) "
+                      +" select customerId,customerName,dateOfBirth,address,contactNumber "
+                      + "from CustomerEntity ce where ce.address=:address and ce.dateOfBirth<:dateOfBirth";
+
+    try {
+        sessionFactory = HibernateUtility.createSessionFactory();
+        session = sessionFactory.openSession();
+        Query query = session.createQuery(hql);                                    // Creating query object
+        query.setParameter("address", address);                                    //parameter setting
+        query.setParameter("dateOfBirth", dateOfBirth);
+
+        session.beginTransaction();
+        noOfRowsAffected = query.executeUpdate();                               // Executing the query
+        session.getTransaction().commit();
+
+
+
+
+
+// Definitions:
+  CRUD = Create (or Insert), Retrieve, Update, Delete
+
+
+// Database Credentials
+/*
+  Database = testDB
+  URL = jdbc:h2:~/test
+  Username = db1104308
+  Password = infy
+  */
