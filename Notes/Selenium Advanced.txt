@@ -1,0 +1,235 @@
+// Selenium Advanced
+// Carson Pemble
+// 12/8/2020
+
+
+## Selenium Advanced ##
+
+TestingNG Framework:
+  NG = Next Gen (Automated Testing Framework)
+  Can create HTML reports, easier annotations, grouping and prioritization and parallelization of tests.
+
+  Install via Eclipse Marketplace
+
+
+  Annotations:
+    BeforeSuite
+
+    Test, BeforeMethod, BeforeClass, BeforeTest, and  (+ After's)
+
+      @Parameter = used to fetch parameter values from parameter tag mentioned in the testng.xml file.
+          EX: @Parameters({"browser","URL"})
+      @Optional = If a parameter is not present in testng.xml file, the test will take the default value mentioned in @Optional during execution
+
+      In Testing Method:
+        @BeforeClass
+        @Parameters({"browser","URL"})
+        public void Setup(@Optional("Firefox")String browser1,String url) {
+          System.out.println("Browser:"+browser1);
+          System.out.println("AUT Link: "+url);
+      }
+      In testing.xml:
+        <parameter name="Browser" value="Firefox"></parameter>
+        <parameter name="URL" value="http://localhost:8080/PackAndGo_v2/index.html"></parameter>
+
+
+      @DataProvider = Runs tests  multiple times with different data
+          EX:
+              @Test(dataProvider = "credentials")
+
+              @DataProvider(name="credentials")
+              public Object[][] getData() {
+                Object[][] data = new Object[3][2];
+                data[0][0] = "John";
+                data[0][1] = "John123!";
+                data[1][0] = "Steve";
+                data[1][1] = "Steve123!";
+                data[2][0] = "Craig";
+                data[2][1] = "Craig123!";
+                return data;
+              }
+
+      @Test - Attributes
+        dependsOnMethods - used to execute a method based on its dependent method.
+        Priority  - sets priority of test method (lower will be scheduled first)
+        Enabled   - if True test method will get executed
+        Groups    - clubs several tests under a common name
+        dataProvider - provides data sets for the test parameterization
+
+        @Test(priority = 2,enabled=false)         // Gives a priority of 2 but is not enabled to execute
+        @Test(dependsOnMethods = { "login" })     // Only executes once login test has executed
+        @Test(groups = { "car", "sedan" })        // adds test to these groups
+
+
+  TestNG Assertions:
+    Hard Assert (Normal Assertion)
+      Test will stop execution when a hard assertion fails
+      Assert.assertEquals("demoforHardAssertion", assertionString);
+
+    Soft Assert
+      Test will NOT stop execution when a soft assertion fails
+      SoftAssert softAssert=new SoftAssert();
+      softAssert.assertEquals("demoforHardAssertions", assertionString);
+
+      assertEquals(String actual, String expected): This method compares whether the expected string value and actual string value are the same. If the values are different an AssertionError is thrown.
+      assertTrue(boolean condition): This method asserts that a condition is true. If the condition is not true an AssertionError is thrown.
+      assertFalse(boolean condition): This method asserts that a condition is false. If the condition is not false an AssertionError is thrown.
+
+
+  Executing TestNG through Command Prompt:
+    CD D:\Solutions\test\src        // Navigate to project root
+    javac -cp .\lib\*;D:\Solutions\test\src\demoes\Demo04_TestNG_DataProvider.java    // compile
+    java -cp .\lib\*;.\bin\ Demo04_TestNG_DataProvider.class org.testng.TestNG D:\Solutions\test\src\testng.xml   // execute
+
+  Executing TestNG through batch file:
+    Create a .bat file with code:
+
+    set projectLocation=D:\Solutions\test\src\
+    cd %projectLocation%
+    set classpath=%projectLocation%\lib\*;    // Classpath = providing the path to the dependencies like jar file, .class files etc.
+    java org.testng.TestNG %projectLocation%\testng.xml
+    pause
+
+
+
+
+
+Enhance Test Scripts:
+  Xpath Axes:
+    XPath, which is used to uniquely find web elements which do not have proper attributes.
+    Predicates - conditions in []
+      EX:
+      //title[@*] (Wildcard expression which selects all title elements which have at least one attribute of any kind)
+      //bookstore/book[1] (Selects the first book element that is the child of the bookstore element)
+      //title[@lang] (Selects all the title elements that have an attribute named lang)
+
+    Evaluation Operator:
+      //bookstore/book[position() < 3]
+      //bookstore/book[price > 35.00]
+
+    Xpath Expressions:
+      ancestor::
+      child::node()
+      descendant::
+      parent::
+      precending::
+      ... etc.
+
+
+      count(child::*)   - Returns the number of direct children
+      if (parent::* eq ‘Transportation') then 'Statement 1' else 'Statement 2'
+
+      following-sibling::*
+      count(following::*)   //contains the following siblings of the context node which are at the same level as the context node
+
+      count(descendant::*) // all children (doesn't include self)
+
+      count(preceding-sibling::*) //Preceding-sibling axes contains the preceding siblings of the context node which are at the same level as the context node
+
+      if (self::* eq ‘Water') then 'Statement 1' else 'Statement 2’
+
+      Collumn that contains "Selenium RC" text and get the link before it
+      //td[contains(text(),'Selenium RC')]/preceding-sibling::td/a
+
+
+  SSL Certificates:
+    Dealing with expired SSL certificates.
+
+    SSL = Secure Socket Layer - Used to keep info encrypted
+
+    Create profile - Add profile to code
+
+    (See File: Selenium Advanced - SSL Certificates.java)
+
+
+  JDBC:
+    JDBC = Java Database Connectivity - API for connecting to a Database
+    JDBC, which is used to establish a connection between Selenium and databases.
+
+    Classes:
+      Driver Manager - Handles establishment of connection
+      Driver - Converts JDBC calls to database specific protocol  (thin driver)
+      Connection - Interface - manages thes session between code and base
+      Statement - Interface - provides methods to execute
+      ResultSet - Interface - cursor pointing to a row of a table
+      SQL Exception -  Provides information on a database access errors
+
+    jdbc:<dbtype>://ServerIP:portnumber/db_name,Username,password
+
+    Oracle:
+      Connection scon=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+      Statement stmt=con.createStatement();
+    SQL:
+      Connection con=DriverManager.getConnection("jdbc:sqlserver://*****;user=***;password=****;database=****");
+      Statement stmt=con.createStatement();
+    MySQL:
+      connection = DriverManager.getConnection("jdbc:mysql://****:****/****","Username", "Password");
+      Statement stmt=connection.createStatement();
+
+    public ResultSet executeQuery(String sql) // used to execute SELECT query. It returns an object of ResultSet type.
+
+    ResultSet resset=stmt.executeQuery("select * from Test");
+    while(resset.next())
+    {
+      	System.out.println("Username: "+resset.getString(1));
+      	System.out.println("password : "+resset.getString(2));
+    }
+
+
+
+Implement POM Design Pattern:
+  POM = Page Obeject Model
+    Page Object: Contains variables storing web element type and value .
+                 Contains methods for various interactions with web page.
+
+    Base Class: Contains methods to initialize and terminate the WebDriver instance.
+
+    Test Case Class: Contains test methods to invoke the different mothds in page class.
+                     In methods that click buttons or links, return the object from the method.
+
+ Multiple tests can be grouped under a single suite tag.
+ Multiple tests can be executed in parallel by configuring the thread-count and parallel attributes within suite tag.
+ Each test tag inside the suite should have a unique value for name attribute.
+ Every TestNG test execution creates an index.html file inside test-output folder which contains the following:
+   Name of executed tests, time taken, exception details if failed, execution status, and groups executed.
+
+
+
+Log Reports using Log 4J:
+  (Generate proper logs in different formats)
+  Log4J is open source, easy to use with Selenium, can store in database or file, and better than println.
+
+  Loggers:
+    Log info from test script creator.
+    5 kind of log levels: FATAL, ERROR, WARN, INFO, DEBUG - OFF (turns off logging) & ALL (Used to log all the details)
+      EX:
+        log.info("Info Message!");
+        log.error("Error Message!");
+
+  Appenders:
+    Writes the log messages.
+    Appender Types: ConsoleAppender, FileAppender, RollingFileAppender (backs up log files when reach max size)
+
+  Layout:
+    Responsible for formatting the logging info in different styles.
+
+
+
+
+
+Build Automation Using Maven:
+
+
+
+
+Build Triggers Using Jenkins:
+
+
+
+
+Automation Framework:
+
+
+
+
+Cross Browser Testing Using Selenium Grid:
