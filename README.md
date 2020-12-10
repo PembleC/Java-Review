@@ -1,2 +1,2 @@
 # Java-Review
-I wanted to create a review of basic Java programs, so here it is.
+If I ever want to teach someone Java this repository is for just that. 
