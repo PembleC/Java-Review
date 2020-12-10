@@ -1,0 +1,222 @@
+// Selenium Basics
+// Carson Pemble
+// 12/2/2020
+
+Selenium Basics:
+  Selenium is currently the leading open source web test automation solution.
+  Open Source / Supports multiple languages / Works with Jenkins, Apache Maven, and MVS.
+
+  1) Create automated functional/regression tests,
+  2) Enhance those tests
+  3) Build test suites using JUnit Framework
+
+  AUT = Application Under Test
+
+Selenium IDE / Selenium WebDriver / Selenium Grid
+
+  Selenium IDE is for new users and quick scripts.
+  Selenium Grid is great for cross-platform testing in parallel.
+  Selenium can not be automated for desktop applications, because Selenium API cant recognize the objects.
+
+  Selenium WebDriver (API):
+    Can automate tests in all browsers
+    Can create tests in many languages
+    Only one test script for multiple tests
+
+
+
+  # Create a simple automation script:
+    Choose language = Java
+    Choose framework = JUnit
+    Add external JARs
+    Add Library -> JUnit 4 -> Create new Package for Tests -> Create new JUnit Test
+
+    Common Assertions:
+    assertEquals("excepted value", "actual value");
+    assertTrue("message", condition);
+    assertFalse("message", condition);
+    assertNull(object);
+    assertNotNull(object);
+
+    WebDriver API (org.openqa.selenium.WebDriver):
+    System.setProperty("webdriver.gecko.driver",driverPath+"geckodriver.exe"); 
+    System.setProperty("webdriver.chrome.driver","D:\\ChromeDriver\\chromedriver.exe");
+    WebDriver driver=new ChromeDriver();
+
+    get()   = Loads a new page
+    navigate()  = navigates to given url
+    getCurrentUrl() = Fethes url of current web page
+    getTitle()  = Fethes title of current web page
+    close()   = Closes the browser window
+    quit()    = Quits the WebDriver instance
+    ... etc.
+
+                (View Selenium Basics Demo 1)
+
+    Locators in Selenium:
+      ID - unique to each element - @id - driver.findElement(By.id("ctl00_body_txtUserID")).sendKeys("donhere");
+      Name - mostly  unique - @name - driver.findElement(By.name("ctl00$body$txtUserID")).sendKeys("donhere");
+      LinkText - entire links - <a> </a> - driver.findElement(By.linktext(“Log Out”)).click();
+      Partial Link Text - begin, middle, or end - driver.findElement(By.partialLinkText(“Request Status”)).click();
+      CSS:
+        driver.findElement (By.cssSelector("input#ctl00_body_txtUserID"));
+        driver.findElement(By.cssSelector("input.text[id= ctl00_body_txtUserID] "));
+        driver.findElements(By.tagname(“frame”));
+
+    WebElement interface:
+      driver.findElement(By.name(“btnG”)
+      clear() - clears the values present in text box
+      click() - clicks any element
+      submit()
+      isDisplayed()
+      isEnabled()
+      sendKeys() - enters a value;
+      getText()
+      ... etc.
+
+
+
+
+  # Automate simple interactions:
+
+    Implicit waits = driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+                     driver.manage().timeouts().implicitlyWait(5000, TimeUnit.MILLISECONDS);
+
+                     Thread.sleep(5000);    // in MILLISECONDS
+
+    Explicit waits = WebDriverWait wait = new WebDriverWait(driver, 5);
+                     wait.until(ExpectedConditions.elementToBeClickable(By.id("someid")));
+
+    Interacting with special WebElements:
+        DropDowns:
+            Select the Class from html          - WebElement maindish = driver.findElement(By.id("mainDish"));
+            Create a reference and pass as arg  - Select selectmaindish = new Select(maindish);                 // Selenium class
+            Select using index                  - selectmaindish.selectByIndex(1);
+            Select using visible Text           - selectmaindish.selectByVisibleText("Chicken Chettinad");
+
+        WebTable:
+            <table>    <th> = table header   <tr> = table row    <td> = table collumn
+            Get Table with table tag <table>    - WebElement table = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div/div[3]/table"));
+                                                - List<WebElement> rows = table.findElement(By.tagname("tr"));
+                                                - for(WebElement row : rows){
+                                                -   List<WebElement> cols = row.findElement(By.tagname("td"));
+                                                -     for(WebElement col : cols){
+                                                -       System.out.println(col.getText());
+                                                -     }
+                                                - }
+
+
+
+
+  # Automate complex interactions:
+      New Tabs:
+        // Fetch the number of opened windows
+        Set<String> windowHandles = driver.getWindowHandles();
+        System.out.println("Number of opened windows: " + windowHandles.size());
+        //Switch between windows using the string reference variable
+			  driver.switchTo().window(string);
+        //Fetch the url of the page post successful switch
+			  String title = driver.getTitle();
+
+      Frames:
+          //Switch to the frame using the index number
+          driver.switchTo().frame(1);
+          //Switch back to the parent frame
+          driver.switchTo().parentFrame();
+          //Try to swicth to another frame using frame name
+          driver.switchTo().frame("right");
+
+      Alerts / Confirmations:
+          //Dismiss the alert
+          driver.switchTo().alert().dismiss();
+          //Accept the alert box
+		      driver.switchTo().alert().accept();
+          //Get Text from Alert
+		      driver.switchTo().alert().getText();
+
+      Drag and Drops:
+          //Create a reference for Actions class
+          Actions action = new Actions(driver);
+          //Use dragAndDrop method and provide arguements as the from element and to element
+          action.dragAndDrop(fromElement, toElement).perform();
+          //Post drag fetch the status message and compare for successful verification
+          String afterDragging = driver.findElement(By.xpath("html/body/form/div[4]/div/div[2]/div/p")).getText();
+
+      AJAX Controls:
+          //Employee link
+          WebElement linkEmployee = driver.findElement(By.xpath("html/body/form/div[6]/div/div[1]/div[1]/ul/li[4]/a"));
+          //Details links --- After hovering Employee link
+          WebElement linkDetails = driver.findElement(By.xpath("html/body/form/div[6]/div/div[1]/div[1]/ul/li[4]/ul/li[1]/a"));
+          //Use the action class to
+          Actions action = new Actions(driver);
+          action.moveToElement(linkEmployee).moveToElement(linkDetails).click().build().perform();
+
+          //Explicit wait with a maximum of 20seconds
+          WebDriverWait wait = new WebDriverWait(driver, 20);
+          //Wait until the table gets displayed
+          wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("cphMainContent_tcEmployeeDetails_tpUpdateQualifications_grdQualificationForAdmin"))));
+
+      Dynamic Web Elements:
+      //Create an explicit wait for a maximum of 20seconds
+      WebDriverWait wait=new WebDriverWait(driver, 20);
+      //Wait for the label corresponding to Object to get visible
+      wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lblMessage5")));
+
+
+
+
+  # Enhance automation scripts:
+
+      Parameterization:
+          Using Apache POI to do Data Driven Testing  (HSSF* & XSSF* for Mac)
+
+          (See Selenium Basics Demo 6.java)
+
+          //Reading Excel Files:
+            FileInputStream fileStream = new FileInputStream(filePath);
+            XSSFWorkbook workbook = new XSSFWorkbook(fileStream);
+            XSSFSheet sheet = workbook.getSheet("Sheet1");
+            int rowCount = sheet.getLastRowNum() - sheet.getFirstRowNum();
+
+          //Writing to Excel Files
+			      Row newRow = getSheet.getRow(i);       //Get the current row where the data has to be written
+			      Cell cell = newRow.createCell(2);      //Create a new cell with reference to the row
+			      cell.setCellValue(DashboardMessage);   //Set the value in the cell
+
+      Screenshot Captures:
+          //getScreenshotAs method will take arguement for the output type of the file
+          File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+          //Using the FileUtils class copy the generated screenshot file to any location
+          FileUtils.copyFile(scrFile, new File("C:\\Users\\some_user\\Desktop\\Image.png"));
+            // OR ...
+          FileHandler.copy(scrFile, new File("<your path>\\screenshot.png"));
+
+      Unexpected Exceptions:
+        try{
+          FileUtils.copyFile(scrFile, new File("C:\\Users\\some_user\\Desktop\\Image.png"));
+        } catch(IOException e){
+          System.out.println("Exception Message: " + e.getMessage());
+        }
+
+
+
+
+  # Create a test suite:
+      Test Suite is a group of related tests that run sequentially.
+      @RunWith      - Run the test in the class instead of the runner built into JUnit
+      @SuiteClasses - Specifies the classes to be run when a class annoted with @RunWith(Suite.class) is run.
+
+      Example:
+        package com.test;
+   
+        import org.junit.runner.RunWith;
+        import org.junit.runners.Suite;
+        import org.junit.runners.Suite.SuiteClasses;
+   
+        //RunWith annotaion
+        @RunWith(Suite.class)
+   
+        //@SuiteClass with the .class file name which needs to run as a suite
+        @SuiteClasses({ Demo03_LoginLogOut.class, Demo04_AssertWelcomeMessage.class,Demo10_ExcelReading.class })
+        public class Demo14_TestSuite {
+      }
