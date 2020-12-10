@@ -1,0 +1,83 @@
+// 11/30/2020
+// Carson Pemble
+// Notes from Vishal Mangal
+
+
+
+### Intro to Agile
+  Speed in terms of requirements
+  Helps to Reduce the Time to Market
+  Joins the Devs with the Testers
+
+  Focus more on the individual interactions OVER the processes and tools
+  Focus more on working software OVER the comprehensive documentation
+  Focus more on customer collaboration OVER the contract negotiation
+  Focus more on responding to change OVER following a plan
+
+  Dev Team:
+    Designer, Coder, Tester, Scrum Master, Product Owner
+
+SCRUM:
+
+  Rules:
+    Complete Transparency - So work can always be moving forward
+    Diligent Inspection - Constant feedback on requirements
+    Adaptation - Able to adapt to changes
+    Definition of "Done" - The complete solution is complete not just coding, testing, or anything
+
+  Events:
+    Sprints - A single iteration of the product development cycle (1-2 weeks)
+    Sprint Planning - Beginning of each sprint to decide sprint goal (4-8 hours)
+    Daily Scrum - Standup meeting, what was accomplished and what will be accomplished (15 mins)
+    Sprint Review - End of each sprint. Was the goal achieved? (4 hours)
+    Sprint Retrospection - After Sprint Review. Get feedback for future improvements.
+
+  Artifacts:
+    Product Backlog - List of functions, reqs, features and solutions. Cost for each.
+    Sprint Backlog - Things to be implemented in the current Sprint from the product backlog
+    Increment - Product Backlog items that are completed each sprint, grows every sprint.
+
+  Team Structure:
+    Product Owner - Creates Product Backlog, Decides each sprints scope, represents client.
+    Development Team - Create and maintain sprint Backlog, Design and Code, negotiates sprint goal with PO
+      Tester - Member of Dev team, actively involved, static testing, automation, and validation at each sprint.
+    Scrum Master - Leads the Team, Trains newbs, keeps devs on track with product backlog.
+
+  Extra:
+  User Stories: As a <user role>, [I/he/she/they] should/should not be able to <task definition>
+
+
+
+### Intro to DevOps
+  Development + IT Operations
+  Development = Devs and Testers creating the software
+  Operations = Deploying builds, Monitoring and Maintaining servers and uptime.
+
+  Created -> Deployed -> Users Use Software = Big loads and monitoring those loads
+
+  Continuous Testing - Early risk detection and fast feedback Time
+
+
+
+### Intro to Jenkins
+  Jenkins is a CI (Continuous Integration) System
+  Runs unit tests and rejects the builds if they fail
+  Immediate bug detection
+  Have a deployable system at any time
+
+  Tools for Tests
+    Smoke Testing = Use Selenium
+    Functional automation Testing = Use Selenium
+    Service Testing = Use SAOPUI
+    Performance Testing = Use JMeter
+
+  Build Triggers help the flow of Tests
+  GitLab allow us to have Source Control
+
+
+
+
+QA and QC:
+  Quality Assurance  V.S. Quality Control
+  QA gives you a set of processes that you do that will ensure a good product
+  QC after the process, write tests and execute the tests to observe the results
