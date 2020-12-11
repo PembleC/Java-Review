@@ -212,22 +212,76 @@ Log Reports using Log 4J:
 
   Layout:
     Responsible for formatting the logging info in different styles.
+    Look up Conversion Characters by Apache Log4J
+      [%p] %c %M - %m%n   =    [INFO] MyClass - foo - this is a log message
+
+    Configure Layout:
+      PropertyConfigurator.configure("log4j.properties");
+      (SEE  Selenium Advanced - Log4J Demo)
 
 
+  Reporting in Selenium:
+    1) Emailable-report.html
+    2) Index.html
+    3) Reporter Class       Reporter.log(String s);
+
+    Extent Reports = logger-style API / Prettiest of the reports
+      Contains 2 major classes...
+        // ExtentReports is used to generat the HTML report   true if report exists and is being overwritten, False if new report
+      ExtentReports reports = new ExtentReports(“Path of directory to store the resultant HTML file”, Boolen value)
+        //ExtentTest is used to log test steps in the above
+      ExtentTest test = reports.startTest(“TestName”);
+
+        StartTest  -- This method  is used to execute the preconditions of a test case.
+        EndTest    -- This method  used to execute the post-conditions of a testcase.
+        Log        -- This method is used to log the status of each test step on the HTML report.
+        Flush      -- This method is used to erase any previous data on the report and create a new report.
+
+      test.log(LogStatus.PASS,”Test Passed”);
+        Log Status = Pass, Fail, Skip, Info
 
 
 
 Build Automation Using Maven:
+  Apache Maven - Should help with all the Jar files.       Pom.xml -> holds dependencies
+      Maven Local Repository: located on my system.
+          Created whenever you run a maven command. (C:\Users\<<Username>>\.m2)
 
+      Maven Central Repository: Located on the Web.
+          Created by maven community - Contains a lot of libraries. (I will be using Nexus instead)
 
+      Maven Remote Repository: Located on the web.
+          Where to go if a library is not in the central repo.
+
+  Create a new maven project Pack_and_Go
+  Add the dependencies required in pom.xml .
+  Create a TestNg testcase to Logi n to Pack and Go Application
+  Compile the Maven test
+  Run the project as a Maven Test.
 
 
 Build Triggers Using Jenkins:
+  Used to schedule test executions and saves test executions
+  Once the installation is done, the path for the JDK and maven bin installable needs to be set under manage--> global tool configuration. \
 
+  The key points about Execution of maven project through Jenkins:
+    1) The Maven Integration plugin is required for executing maven projects in Jenkins.
+    2) The path of the pom.xml file needs to be given as argument in the build trigger.
+    3) The execution result can be found under the option "view latest test result" inside the project  dashboard.
 
 
 
 Automation Framework:
+  Modular framework - OOP style / isolated modules for testing
+      Pros: Modulized for easy maintanence
+      Cons: Data is embeded in the test and harder for new test data
+
+  Data-Driven framework - Seperates business logic and test data from eachother (Data is in excel or xml)
+      Pros: Any change in data is auto applied, inc flexibility and maintainability
+      Cons: Requires good knowledge to program read data from any data set.
+
+  Hybrid framework - Combination of both
+      Incorperate data parameterization in the page object model
 
 
 
