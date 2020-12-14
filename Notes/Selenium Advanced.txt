@@ -285,5 +285,23 @@ Automation Framework:
 
 
 
-
 Cross Browser Testing Using Selenium Grid:
+  Grid distributes the test across multiple machines to run parallelly.
+    Good for different browsers and platforms.
+  Only run the test on the HUB Machine, execution on the NODES
+    Hub - Only one in a grid / Test scripts loaded and run here
+    Nodes - One or More / Selenium Instances / Executes the test / different platforms and browsers.
+
+    Set up Hub:
+     java -jar selenium-server-standalone-3.14.0.jar -port 4444 -role hub
+
+    Set up Node:
+     java -Dwebdriver.ie.driver=D:\\driver\IEDriverServer.exe -jar D:\driver\selenium-server-standalone-3.14.0.jar
+     -role webdriver -hub http://10.123.74.251:4444/grid/register -browser browserName="internet explorer" -port 5558
+
+    Config in Selenium Scripts:
+      DesiredCapabilities cap = DesiredCapabilities.internetExplorer();
+      cap.setBrowserName("internet explorer");
+      String Node ="http://10.82.189.5:5558/wd/hub";
+      driver = new RemoteWebDriver(new URL(Node), cap);
+ 
