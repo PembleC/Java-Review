@@ -1,0 +1,183 @@
+// Intro to SOA
+// Carson Pemble
+// 12/18/2020
+
+
+SOA = Service Oriented Architecture
+
+Divides Monolithic applications into smaller services.
+Faster to test as they are broken up.
+More flexible for applications to use a variety of technology and platforms for best solutions
+Changes can go live faster.
+
+
+WEB SERVICES:
+    Intro to Web Services:
+        Service Consumer = system that placed the request
+        Service Provider = System that is hosting the service
+
+        Service Interface = Part of the Provider that received the request and responds
+            Programmatic Functions = if provider and consumer are same language (Java)
+            Object Methods = if provider and consumer are OOP
+            XML or JSON = can use standardized machine readable text messages
+
+    How Web Service Works:
+        POST Service Request -> OK Service Response
+        As long as both web services are connected to each other through LAN, WAN, or the internet OS Don't Matter.
+        Any Computer can read and extract from XML / XML is communication standard
+
+    The Web Service Protocol Stack:
+        (Communication through protocols)
+        1) Search for the web service that you can use            - Service Discovery Protocol Layer
+        2) Invoke the web service operation that you want to use  - Service Description Protocol Layer
+        3) Compose request and interpret Response                 - Messaging Protocol Layer
+        4) Send request and receive Response                      - Transport Protocol Layer
+
+        Service Discovery Protocol Layer:
+            Business registries are constructed in XML using a protocol called
+             UDDI (Universal Description, Discovery and Integration)
+                Contain: Business Addresses / Contact Details / Categorization / etc.
+                Enables: Register under company name / Search for specific services
+
+        Service Description Protocol Layer:
+          (using a protocol called WSDL)    Web Service Description Language
+            A - The physical address where the web service is located.
+                http://10.67.89.41/WebService/InterestCalculator/InterestCalculator.asmx
+            B - The transport protocol to which its messages have to be bound with, for making it reach the address.
+                HTTP, STMP, FTP, etc.
+            C - The contract which describes the message contents and its formatting which will be accepted by the web service and worked upon.
+                The mandatory and optional XML tags in a request message
+
+            See "Segments of WSDL File.xml"
+
+        Messaging Protocol Layer:
+            Composes the request and interprets the response via SOAP Envelopes
+            SOAP = Simple Object Access Protocol
+                Header is optional  -   User Authentication
+                Body is mandatory   -   Actual data
+            See "Request and Response.xml"
+
+        Transport Protocol Layer:
+          Uses Network Protocols to send and receive
+            HTTP = HyperText Transfer Protocol      Most Common / Connectionless / Media Independent / Stateless
+            SMTP = Simple Mail Transfer Protocol
+            FTP =  File Transfer Protocol
+
+            POST command is HTTP sending info
+            200 is standard success code in HTTP
+
+
+
+SERVICE ORIENTED ARCHITECTURE:
+    Data and Application Layer - Layer 1:
+        The existing software logic and database
+        The existing loan broker app / credit agency app / bank app
+
+    Enterprise Components Layer - Layer 2:        (Middle man)
+        Adapters - process the XMLs sent and received from web service components
+        makes the existing systems compatible with web service protocols
+
+    Services Layer - Layer 3:
+        Loan Broker service = receives loan request
+        Credit Agency service = retrieves customer credit score
+        Lender Service = Determines which bank to request loan from based off credit
+
+    Business Process Layer - Layer 4:             (Middle man)
+        (request-response sequences in a language called BPEL)
+        List of requests and responses from each service
+        Communication layer between service layer and presentation layer
+        BPEL is XML based language to allow SOA interconnection
+            Orchestration - Synchronized by directing service / don't know about other services
+            Choreography - Services work with each other / know about others
+
+    Consumer Layer (Presentation Layer):
+        Front End = Website / Mobile App / IVRU
+        Portals where customers can place their loan application to the loan broker
+        Enterprise Service Bus (ESB) - Helps with monitoring and logging    MORE BELOW
+
+    Integration Layer:
+        How different layers interact with each others
+        Involves techniques in sending, transporting, and receiving requests/responses
+            Queueing (FIFO) of XML Messages or API Calls
+            Routing reduces load, inc efficiency, simplifies SOA application arch.
+                Content Based Routing - reads content and routes to correct recipient
+                Service Repository Based Routing - reads property and cross checks with service repository
+                    Service domain router / service router (inside domain)
+            Synchronous - waits for response before sending another message
+            Asynchronous - keeps sending / parallelism
+
+        ESB - Enterprise Service Bus:
+            When you have 3 or more application/services
+            HW and SW that implements...
+                Queuing and holding messages
+                Routing messages using content based routing
+                Enables Asynchronous or Synchronous
+                Integration with Legacy systems
+                XML language for communication
+
+    Middleware:
+        Middleware = Service Layer + Integration    (HW and SW)
+        Enables interactions between consumer and provider
+            Message Oriented Middleware (MOM) - Syn or Asy, Most Common for SOAP messages
+            Remote Procedure Called (RPC) - Multiple servers, appears as a normal procedure, pass parameters
+            Object Request Broker (ORB) - Passing Programmatic objects, for OOP
+
+
+
+SOA TESTING:
+    Intro to SOA Testing:
+        The market is shifting towards SOA and therefore I need to know
+
+    Phases of SOA Testing:
+        Service Level Testing - Business processes/services are tested individually
+            Functional Testing - Working and correct proper error messages
+            Security Testing - block unauthorized and unwanted requests
+            Performance Testing - can it handle a lot of users and loads
+
+        Integration Testing - Services, application & data, and enterprise components work together
+            Done in parallel with Development
+            Functional Testing - validates communication between each pair
+            Security Testing - block unauthorized and unwanted communication in interfaces
+            Performance Testing - can it handle a lot of users and loads
+
+        Orchestration Testing - business logic, sequencing, exception handling
+            Functional Testing - ensure business flow config by BPEL files
+            Performance Testing - Load and endurance testing
+
+        End-to-End Testing - validate day to day scenarios
+            Functional Testing - Presentation layer validation and verification
+            Security Testing - individual apps in presentation layer
+            Performance Testing - Load, Stress, and Fail tests
+
+        Regression Testing - full or partial re-execution of previously passed tests
+            Best to do with code change in any layer of SOA or a new feature
+
+    Challenges in SOA Testing:
+        Isolating defects -> Automation tools
+        More security and performance issues -> Tools address NFR's in domain security
+
+    SOA Testing Tools:
+        SOAPUI    - Open source services and API testing tool / Windows desktop app / SOAP, REST, HTTP supported / built in reporting tools
+        CS Lisa   - product suite for functional testing / Learn Invoke Simulate Analyze / Design and Execute API tests
+        Parasoft SOATest   - Automated web service tester / Tests all aspects  of web service / Supports lots of technologies
+        Rational Integration Tester   - IBM's API and services testing tool / virtualization / records system behavior
+        MiTWA   - ?
+
+
+
+
+Notes:
+
+SOAPUI = Create SOAP Projects
+  ?wsdl = Put this after any URL and if it returns data in XML format, you know it is a SOAP Service.
+  Initial WSDL = Normal URL with ?wsdl at the end.
+
+Project -> Sourcecode and New TestSuite -> Test Cases -> Test Steps -> Request
+Add -> Assertion -> SLA -> Response Time
+Contains / Not Contains / XPATH Match / XQuery Match / SLA Response
+Contains Assert: <DivNumResult> or 12   (Can check for the tag or actual result)
+
+Parametrization: Project-Level, TestSuite-Level, TestCase-Level and PropertyTransfer
+name and value
+num1      25                in code     ${#Project#num1}
+num2      167                           ${#TestCase#num1}

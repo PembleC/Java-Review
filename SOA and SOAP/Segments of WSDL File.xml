@@ -1,0 +1,62 @@
+// Segments of WSDL File
+// Carson Pemble
+// 12/18/2020
+
+
+// Web Service End Point
+<wsdl:port name="InterestCalculatorSoap" binding="tns:InterestCalculatorSoap">
+<soap:address location="http://10.67.89.41/WebService/InterestCalculator/InterestCalculator.asmx"/>
+
+
+// SOAP Messaging Protocol / HTTP Transport Protocol
+<wsdl:binding name="InterestCalculatorSoap" type="tns:InterestCalculatorSoap">
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="SimpleInterest">
+.................
+</wsdl:operation>
+<wsdl:operation name="AnnualCompundInterest">
+.................
+</wsdl:operation>
+<wsdl:operation name="MultipleCompundInterest">
+.................
+</wsdl:operation>
+</wsdl:binding>
+
+
+// Interface (Operations) Provided by Web Service
+<wsdl:portType name="InterestCalculatorSoap">
+<wsdl:operation name="SimpleInterest">
+<wsdl:input message="tns:SimpleInterestSoapIn"/>
+<wsdl:output message="tns:SimpleInterestSoapOut"/>
+</wsdl:operation>
+<wsdl:operation name="AnnualCompundInterest">
+<wsdl:input message="tns:AnnualCompundInterestSoapIn"/>
+<wsdl:output message="tns:AnnualCompundInterestSoapOut"/>
+</wsdl:operation>
+<wsdl:operation name="MultipleCompundInterest">
+<wsdl:input message="tns:MultipleCompundInterestSoapIn"/>
+<wsdl:output message="tns:MultipleCompundInterestSoapOut"/>
+</wsdl:operation>
+</wsdl:portType>
+
+
+// Request Parameters
+<s:element name="AnnualCompundInterest">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="1" maxOccurs="1" name="principle" type="s:int"/>
+<s:element minOccurs="1" maxOccurs="1" name="rateperc" type="s:float"/>
+<s:element minOccurs="1" maxOccurs="1" name="years" type="s:int"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+
+
+// Response Parameters
+<s:element name="AnnualCompundInterestResponse">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="1" maxOccurs="1" name="AnnualCompundInterestResult" type="s:double"/>
+</s:sequence>
+</s:complexType>
+</s:element>

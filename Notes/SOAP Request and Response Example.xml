@@ -1,0 +1,38 @@
+// SOAP Request and Response Example
+// Carson Pemble
+// 12/21/2020
+
+
+// SOAP Request
+POST /WebService/HMSWebServices/BloodBankManagement.asmx HTTP/1.1
+Host: 10.67.89.42
+Content-Type: text/xml; charset=utf-8
+Content-Length: length
+SOAPAction: "http://tempuri.org/AddNewBloodBankDetails"
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <AddNewBloodBankDetails xmlns="http://tempuri.org/">
+      <BloodBankName>string</BloodBankName>
+      <BloodBankAddress>string</BloodBankAddress>
+      <BloodBankContactNo>string</BloodBankContactNo>
+      <BloodBankEmailId>string</BloodBankEmailId>
+    </AddNewBloodBankDetails>
+  </soap:Body>
+</soap:Envelope>
+
+
+
+
+// SOAP Response
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset=utf-8
+Content-Length: length
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <AddNewBloodBankDetailsResponse xmlns="http://tempuri.org/">
+      <AddNewBloodBankDetailsResult>int</AddNewBloodBankDetailsResult>
+    </AddNewBloodBankDetailsResponse>
+  </soap:Body>
+</soap:Envelope>

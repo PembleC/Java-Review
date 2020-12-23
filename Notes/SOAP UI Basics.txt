@@ -1,0 +1,171 @@
+// SOAP UI Basics
+// Carson Pemble
+// 12/21/2020
+
+
+SOA's don't need GUI's so they are 30-40% faster than others
+
+SOAP UI is a popular service test automation tools:
+  Built on Java platform
+  Functional Tests / Load Tests / Security Tests
+  Supports SOAP, REST, HTTP, JMS, JDBC, AMF
+
+
+SOAP Service Testing
+    Use standard XML Request and Response
+    1. Create SOAP Project
+        Set up Workspace
+        Start New Project (SOAP || Rest)
+        Add the correct WSDL link
+
+    2. Create a Test Suite
+        Structure: Test Suite - Test Case - Test Step
+        1) Generate Test suite
+        2) New TestCase
+        3) Add Step -> SOAP Request
+
+    3. Parameterize using Properties
+        Project Level Properties
+        Test Suite Level Properties
+        Test Case Level Properties
+        Property Step and Property Transfer Step (Transfer between test steps)
+
+        Once you have defined the project level properties,
+        they can be accessed in any test step request under the project using the syntax below.
+              ${#Project#PropertyName}
+
+          EX:
+            name and value
+            num1      25                in code     ${#Project#num1}
+            num2      167                           ${#TestCase#num1}    ${#TestSuite#num1}
+
+        When transferring properties us "ns" to auto fill the data.
+
+    4. Parameterize using Groovy Script
+        Groovy is scripting language that allows you to read in files. Excel / HTML/ XML
+        Set Up Script is similar to the @Before, access the file and reads the first set of data.
+
+        Set Up Example:
+              context.fileReader = new BufferedReader(new FileReader("C:\\Users\\Public\\New folder\\data.txt"));
+              String firstLine = context.fileReader.readLine();
+              String[] values = firstLine.split(",");
+              testCase.testSteps['Properties'].setPropertyValue('property1',values[0]);
+              testCase.testSteps['Properties'].setPropertyValue('property2',values[1]);
+
+        Groovy Script iterates throught the file by reading the data until the end. (Use if loop)
+
+        Variable Declaration:
+            String x
+            def o
+            x = "Hi"
+
+        Console Log = log.info(“Print Groovy”)
+            log.info(testRunner.testCase.name)
+
+        Setting Properties:
+            Project Level = testRunner.testCase.testSuite.project.setPropertyValue("ProProperty","Project-Data1"
+            Case Level = testRunner.testCase.setPropertyValue("CaseProperty","Case-Data")
+
+        Navigate test steps:
+            testRunner.gotoStep(<<test step number>>);
+
+        Context-related Properties:
+            context.myProperty = "Hello"
+            log.info( context.myProperty )
+
+
+        Groovy Script Example:
+            String nextLine = context.fileReader.readline()
+            if(nextLine != null){
+            	String[] data = nextLine.split(",")
+            	testRunner.testCase.testSteps['Properties'].setPropertyValue('property1',data[0]);
+            	testRunner.testCase.testSteps['Properties'].setPropertyValue('property2',data[1]);
+            	testRunner.gotoStep(0);
+            }
+
+
+
+
+    5. Add Assertions
+
+    Test Step -> Assertions -> Add -> <Choose Type>
+
+        Response SLA = How long the response is allowed to take.
+        Contains = does a specified string exist in the response message.
+        Not Contains = Make sure this string is not in the response
+        XPATH Match = Match value at a specific xpath
+
+
+        XPath Expression:
+            declare namespace ns1='http://tempuri.org/';
+            declare namespace soap='http://www.w3.org/2003/05/soap-envelope';
+            //*:AddResponse/*:AddResult
+
+        XQuery Expression:
+            declare namespace soap='http://schemas.xmlsoap.org/soap/envelope/';
+            declare namespace ns1='http://tempuri.org/';
+            <Result>
+            {
+              for $x in //*:MultiplyResponse/*:MultiplyResult
+              return <CustomResult> {data($x/text())} </CustomResult>
+            }
+            </Result>
+
+
+
+
+REST Service Testing
+    REST = Representational State Transfer - HTTP Protocol - JSON Format
+    URIs = Uniform Resource Identifiers
+
+    More secure than SOAP
+    URI is exposed to outside world
+    Services are cacheable
+
+    REST Methods:
+        GET = read data from resource | table (200 = OK, 404=Not Found, 400=Bad Request)
+        POST = updates or creates a new resource (entry) in the database (201=Created)
+        PUT = updates the value in the resource, no duplicates (200=OK, 204=No Content)
+        DELETE = delete the resource (200=OK)
+        OPTIONS = determine the needed HTTP method
+
+
+    1. Create a REST project
+        create a new project for each GET | POST
+    2. Create a test suite
+        create a new test suite for each GET | POST
+    3. Add Assertions
+        JsonPath Count:  page    =  number of page tags     (use . if inside a branch)  Returns Count
+        JsonPath Existence Match:   .id   = true                                        Returns Boolean
+        JsonPath Match:   .status   = available, available, ... etc                     Returns the Value
+        JsonPath Regex Match:   .text     [A-Za-z\\s]     = true    .id[3] (3rd id)     Returns Boolean
+        Valid HTTP Status Codes: 200
+        Response SLA:  250
+    4. Parametrization using Groovy
+        Property Transfer:
+        Pass the parameter and not "Request"
+
+
+
+
+
+
+Service Virtualization
+
+
+
+
+
+
+Notes:
+?wsdl = Put this after any URL and if it returns data in XML format, you know it is a SOAP Service.
+Initial WSDL = Normal URL with ?wsdl at the end.
+
+Test Steps = the 'building blocks' of functional tests in SOAP UI
+Test Cases = a collection of Test Steps to test some aspects of the service
+Test Suite = a collection of Test Cases used for grouping functional tests into logical units
+
+Project -> Sourcecode and New TestSuite -> Test Cases -> Test Steps -> Request
+Add -> Assertion -> SLA -> Response Time
+Contains / Not Contains / XPATH Match / XQuery Match / SLA Response
+Contains Assert: <DivNumResult> or 12   (Can check for the tag or actual result)

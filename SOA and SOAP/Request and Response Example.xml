@@ -1,0 +1,35 @@
+// Request and Response Example
+// Carson Pemble
+// 12/18/2020
+
+// Request
+POST /WebService/InterestCalculator/InterestCalculator.asmx HTTP/1.1
+Host: 10.67.89.41
+Content-Type: text/xml; charset=utf-8
+Content-Length: length
+SOAPAction: "http://tempuri.org/AnnualCompundInterest"
+
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <AnnualCompundInterest xmlns="http://tempuri.org/">
+      <principle>5000</principle>
+      <rateperc>0.05</rateperc>
+      <years>10</years>
+    </AnnualCompundInterest>
+  </soap:Body>
+</soap:Envelope>
+
+
+// Response
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset=utf-8
+Content-Length: length
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <AnnualCompundInterestResponse xmlns="http://tempuri.org/">
+      <AnnualCompundInterestResult>1.5907174089623451E+37</AnnualCompundInterestResult>
+    </AnnualCompundInterestResponse>
+  </soap:Body>
+</soap:Envelope>
